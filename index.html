@@ -9,7 +9,7 @@
     <style>
         /* === ESTILOS GENERALES Y PIXEL ART === */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Press Start 2P', monospace; user-select: none; }
-        body { background-color: #2c1a3b; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; perspective: 1000px; }
+        body { background-color: #2c1a3b; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; perspective: 1000px; margin: 0; }
 
         #game-window {
             width: 100vw; height: 100vh; max-width: 1024px; max-height: 680px;
@@ -20,7 +20,7 @@
         /* === BOLA DE DISCO Y LUCES DE FIESTA === */
         #disco-lights {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 85; /* Cubre el cuarto, pero va debajo del overlay oscuro */
+            pointer-events: none; z-index: 85; 
             mix-blend-mode: overlay;
             animation: discoColors 2s infinite alternate;
         }
@@ -42,23 +42,20 @@
             background-color: #e0e0e0;
             border: 4px solid #4a148c;
             box-shadow: 0 0 15px rgba(255,255,255,0.8), inset -5px -5px 15px rgba(0,0,0,0.4);
-            /* Patrón de píxeles/espejos */
             background-image:
                 linear-gradient(rgba(0,0,0,0.15) 6px, transparent 6px),
                 linear-gradient(90deg, rgba(0,0,0,0.15) 6px, transparent 6px);
             background-size: 10px 10px;
             animation: spinDisco 1s linear infinite;
         }
-        @keyframes spinDisco {
-            0% { background-position: 0 0; }
-            100% { background-position: 20px 0; }
-        }
+        @keyframes spinDisco { 0% { background-position: 0 0; } 100% { background-position: 20px 0; } }
 
         /* === SALÓN DE CLASES CON PATRONES === */
         #wall {
             width: 100%; height: 55%;
             background: repeating-linear-gradient(45deg, #f8bbd0, #f8bbd0 20px, #fce4ec 20px, #fce4ec 40px);
             border-bottom: 8px solid #ce93d8; position: relative; display: flex; justify-content: center; align-items: center; padding-top: 10px;
+            transition: height 0.3s;
         }
 
         #floor {
@@ -69,6 +66,7 @@
                 linear-gradient(45deg, #ab47bc 25%, transparent 25%, transparent 75%, #ab47bc 75%, #ab47bc);
             background-size: 40px 40px; background-position: 0 0, 20px 20px;
             position: relative; perspective: 800px;
+            transition: height 0.3s;
         }
 
         /* === PIZARRA Y TEXTO EFECTO TIZA === */
@@ -121,11 +119,9 @@
 
         .c-torso-group { display: flex; align-items: flex-start; margin-top: -2px; z-index: 2; position: relative; }
         .c-shirt { width: 30px; height: 25px; background-color: #ffffff; border: 3px solid #4a148c; border-radius: 5px 5px 0 0; margin: 0 -2px; z-index: 3; position: relative; }
-        
         .c-arm { position: absolute; width: 10px; height: 22px; background-color: #ffe0bd; border: 3px solid #4a148c; border-radius: 5px; top: 5px; z-index: 1; }
         .c-arm-left { left: -12px; transform: rotate(135deg); transform-origin: top right; }
         .c-arm-right { right: -12px; transform: rotate(-135deg); transform-origin: top left; }
-        
         .c-skirt { width: 36px; height: 12px; background-color: #ff69b4; border: 3px solid #4a148c; border-radius: 0 0 5px 5px; margin-top: -3px; z-index: 2; position: relative; }
         .c-legs { display: flex; gap: 6px; margin-top: -3px; z-index: 1; position: relative; }
         .c-leg { width: 10px; height: 15px; background-color: #ffe0bd; border: 3px solid #4a148c; border-radius: 0 0 4px 4px; }
@@ -193,7 +189,7 @@
         .gsap-confetti { position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; border-radius: 2px; }
         .floor-confetti { position: absolute; width: 6px; height: 6px; z-index: 1; border-radius: 1px; }
 
-        /* === SISTEMA DIÁLOGO Y OVERLAY CORREGIDO === */
+        /* === SISTEMA DIÁLOGO Y OVERLAY (Mejorado con texto predefinido) === */
         #dark-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.7); z-index: 100;
@@ -206,10 +202,8 @@
         #local-dialog {
             position: absolute; z-index: 1000;
             background-color: #ffffff; border: 5px solid #ff69b4; border-radius: 8px;
-            padding: 15px; width: 280px; /* Más ancho para que el texto respire */
-            text-align: center; box-shadow: 0px 8px 0px rgba(0,0,0,0.4);
-            transform-origin: bottom center; display: none;
-            box-sizing: border-box;
+            padding: 15px; width: 280px; text-align: center; box-shadow: 0px 8px 0px rgba(0,0,0,0.4);
+            transform-origin: bottom center; display: none; box-sizing: border-box;
         }
         #local-dialog::after {
             content: ''; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%);
@@ -219,24 +213,57 @@
         #btn-bebeme { background-color: #ff69b4; color: #ffffff; border: 4px solid #4a148c; padding: 12px; font-size: 14px; cursor: pointer; box-shadow: 3px 3px 0px #4a148c; width: 100%; box-sizing: border-box; }
         #btn-bebeme:active { box-shadow: 0px 0px 0px #4a148c; transform: translate(3px, 3px); }
         
-        #text-area-container { display: none; flex-direction: column; gap: 12px; width: 100%; }
+        #text-area-container { display: none; flex-direction: column; width: 100%; }
         #text-area-container.active { display: flex; }
         
-        textarea {
-            width: 100%; height: 100px; /* Más alto */
-            border: 4px solid #ba68c8; border-radius: 4px; padding: 10px;
-            font-size: 12px; line-height: 1.6; /* Texto más claro y posicionado */
-            color: #4a148c; background-color: #fce4ec; resize: none; outline: none;
-            box-sizing: border-box;
+        #cup-predefined-text {
+            font-size: 12px; line-height: 1.6; color: #4a148c;
+            background-color: #fce4ec; border: 4px solid #ba68c8; border-radius: 4px;
+            padding: 15px 10px; box-sizing: border-box; text-align: center;
         }
-        
-        .btn-action { background-color: #ba68c8; color: #ffffff; border: 4px solid #4a148c; padding: 10px; font-size: 12px; cursor: pointer; box-shadow: 3px 3px 0px #4a148c; width: 100%; box-sizing: border-box; }
-        .btn-action:active { box-shadow: 0px 0px 0px #4a148c; transform: translate(3px, 3px); }
 
-        @media (max-width: 600px) {
-            #chalkboard-text { font-size: 20px; }
+        /* =========================================
+           === CORRECCIONES PARA CELULAR (RESPONSIVE) ===
+           ========================================= */
+        @media (max-width: 768px) {
+            #game-window {
+                /* Eliminar bordes y forzar pantalla completa */
+                max-width: none; max-height: none; height: 100dvh; width: 100vw;
+                border: none; box-shadow: none; border-radius: 0;
+            }
+            
+            /* Darle más espacio al suelo para evitar que todo se junte */
+            #wall { height: 45%; }
+            #floor { height: 55%; }
+            
+            /* Escalar y reposicionar el escritorio para que no tape la pizarra */
+            #teacher-area { bottom: -5px; right: 2%; transform: scale(0.7); transform-origin: bottom right; }
+            #chalkboard { height: 60%; width: 95%; border-width: 8px; padding: 10px; }
+            #chalkboard-text { font-size: clamp(14px, 4.5vw, 24px); }
+            
+            /* Escalar pupitres para que tengan su "espacio lindo" */
+            .desk-group { transform: scale(0.75); transform-origin: bottom center; }
+            
+            /* Reposicionar filas en vertical */
+            #desk-1 { bottom: 68%; left: 0%; }
+            #desk-2 { bottom: 68%; left: 50%; }
+            #desk-3 { bottom: 68%; right: 0%; }
+            #desk-4 { bottom: 38%; left: 5%; }
+            #desk-5 { bottom: 38%; left: 50%; }
+            #desk-6 { bottom: 38%; right: 5%; }
+            #desk-7 { bottom: 5%; left: -2%; }
+            #desk-8 { bottom: 5%; left: 50%; }
+            #desk-9 { bottom: 5%; right: -2%; }
+            
+            /* Ajustar Celina y los gatos para que no se corten abajo */
+            #celina { transform: translateX(-50%) scale(0.85); bottom: 10px; }
+            #cat-gold { left: calc(50% - 55px); transform: scaleX(-1) scale(0.85); bottom: 12px; }
+            #cat-gray { left: calc(50% + 25px); transform: scale(0.85); bottom: 12px; }
+            
+            /* Diálogo y globos ajustados a pantalla pequeña */
             #local-dialog { width: 220px; }
-            textarea { font-size: 10px; height: 80px; }
+            #cup-predefined-text { font-size: 10px; padding: 12px 8px; }
+            .balloon { transform: scale(0.8); }
         }
     </style>
 </head>
@@ -246,19 +273,18 @@
         <!-- Overlay Oscuro -->
         <div id="dark-overlay"></div>
 
-        <!-- Pop-up Localizado Mejorado -->
+        <!-- Pop-up Localizado (Texto Predefinido Lindo) -->
         <div id="local-dialog">
             <button id="btn-bebeme">¡BÉBEME!</button>
             <div id="text-area-container">
-                <textarea id="cup-text-input" placeholder="Escribe tu mensaje kawaii aquí..."></textarea>
-                <button class="btn-action" id="btn-save">Guardar Mensaje</button>
+                <p id="cup-predefined-text"></p>
             </div>
         </div>
 
         <!-- Confeti Inicial (GSAP) -->
         <div id="confetti-container"></div>
 
-        <!-- === NUEVO: Bola de Disco y Luces === -->
+        <!-- Bola de Disco y Luces -->
         <div id="disco-lights"></div>
         <div id="disco-wire"></div>
         <div id="disco-ball"></div>
@@ -379,10 +405,14 @@
             }, 500);
         };
 
-        // === LÓGICA DE BEBIDAS Y DIÁLOGO LOCALIZADO MEJORADO ===
+        // === LÓGICA DE BEBIDAS Y DIÁLOGO CON TEXTOS PREDEFINIDOS ===
+        // Aquí están los textos lindos predefinidos
         const cupData = [
-            { text: "", isFirstClick: true }, { text: "", isFirstClick: true },
-            { text: "", isFirstClick: true }, { text: "", isFirstClick: true }, { text: "", isFirstClick: true }
+            { text: "¡Feliz Cumple Celina! Eres súper especial, pásala genial. ✨", isFirstClick: true },
+            { text: "¡Que todos tus deseos se cumplan hoy y siempre! 🎂", isFirstClick: true },
+            { text: "Sigue brillando con esa energía tan bonita. ¡Feli pumpum! 🌟", isFirstClick: true },
+            { text: "¡Disfruta tu pastel y esta fiestecita kawaii que te preparamos! 🎈", isFirstClick: true },
+            { text: "¡Te queremos mucho Celina! Que sea un día inolvidable. 💖", isFirstClick: true }
         ];
 
         let currentCupIndex = -1;
@@ -393,8 +423,7 @@
         
         const btnBebeme = document.getElementById('btn-bebeme');
         const textAreaContainer = document.getElementById('text-area-container');
-        const cupTextInput = document.getElementById('cup-text-input');
-        const btnSave = document.getElementById('btn-save');
+        const cupPredefinedText = document.getElementById('cup-predefined-text');
 
         function closeDialog() {
             gsap.to(localDialog, { scale: 0, opacity: 0, duration: 0.2, ease: "power1.in", onComplete: () => {
@@ -415,14 +444,11 @@
                 const cupRect = cup.getBoundingClientRect();
                 const gwRect = gameWindow.getBoundingClientRect();
                 
-                // Cálculo de posición inteligente para que no se salga de los bordes
                 let leftPos = (cupRect.left - gwRect.left) + (cupRect.width / 2);
-                const dialogWidth = window.innerWidth <= 600 ? 220 : 280;
+                const dialogWidth = window.innerWidth <= 768 ? 220 : 280;
                 const halfWidth = dialogWidth / 2;
                 
-                // Si está muy pegado a la izquierda
                 if (leftPos - halfWidth < 10) { leftPos = halfWidth + 10; }
-                // Si está muy pegado a la derecha
                 if (leftPos + halfWidth > gwRect.width - 10) { leftPos = gwRect.width - halfWidth - 10; }
 
                 const topPos = (cupRect.top - gwRect.top) - 15; 
@@ -435,13 +461,14 @@
                 currentCupIndex = parseInt(this.getAttribute('data-cup'));
                 const data = cupData[currentCupIndex];
 
+                // Si es la primera vez muestra el botón, si no, directo al mensaje
                 if (data.isFirstClick) {
                     btnBebeme.style.display = 'block';
                     textAreaContainer.classList.remove('active');
                 } else {
                     btnBebeme.style.display = 'none';
                     textAreaContainer.classList.add('active');
-                    cupTextInput.value = data.text;
+                    cupPredefinedText.innerText = data.text;
                 }
 
                 darkOverlay.classList.add('active');
@@ -449,19 +476,15 @@
             });
         });
 
+        // Al hacer clic en "BÉBEME" revela el texto lindo predefinido
         btnBebeme.addEventListener('click', function() {
             cupData[currentCupIndex].isFirstClick = false;
             btnBebeme.style.display = 'none';
             textAreaContainer.classList.add('active');
-            cupTextInput.value = cupData[currentCupIndex].text;
-            cupTextInput.focus();
+            cupPredefinedText.innerText = cupData[currentCupIndex].text;
         });
 
-        btnSave.addEventListener('click', function() {
-            cupData[currentCupIndex].text = cupTextInput.value;
-            closeDialog();
-        });
-
+        // Ya no hay botón guardar, simplemente se cierra tocando lo oscuro
         darkOverlay.addEventListener('click', closeDialog);
     </script>
 </body>
